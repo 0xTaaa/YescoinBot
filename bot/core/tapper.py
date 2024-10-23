@@ -1,5 +1,5 @@
 import asyncio
-from time import time
+from time import time, time_module
 from random import randint
 from urllib.parse import unquote
 
@@ -10,6 +10,8 @@ from pyrogram import Client
 from pyrogram.errors import Unauthorized, UserDeactivated, AuthKeyUnregistered
 from pyrogram.raw.functions.messages import RequestAppWebView
 from pyrogram.raw.types import InputBotAppShortName
+from datetime import datetime, timedelta
+from tzlocal import get_localzone
 
 from bot.config import settings
 from bot.utils import logger
@@ -255,31 +257,31 @@ class Tapper:
                         logger.info(f"Night Mode ON | Good Night Baby! | Sleeping for {time_to_sleep} seconds until {end_time}.")
                         await asyncio.sleep(time_to_sleep)
 
-                   elif time() - access_token_created_time >= 3600:
-                        tg_web_data = await self.get_tg_web_data(proxy=proxy)
-                        access_token = await self.login(http_client=http_client, tg_web_data=tg_web_data)
+                    elif time() - access_token_created_time >= 3600:
+                         tg_web_data = await self.get_tg_web_data(proxy=proxy)
+                         access_token = await self.login(http_client=http_client, tg_web_data=tg_web_data)
 
-                        http_client.headers["Token"] = access_token
-                        headers["Token"] = access_token
+                         http_client.headers["Token"] = access_token
+                         headers["Token"] = access_token
 
-                        access_token_created_time = time()
+                         access_token_created_time = time()
 
-                        profile_data = await self.get_profile_data(http_client=http_client)
+                         profile_data = await self.get_profile_data(http_client=http_client)
 
-                        balance = profile_data['currentAmount']
-                        rank = profile_data['rank']
-                        level = profile_data['userLevel']
-                        invite_amount = profile_data['inviteAmount']
+                         balance = profile_data['currentAmount']
+                         rank = profile_data['rank']
+                         level = profile_data['userLevel']
+                         invite_amount = profile_data['inviteAmount']
 
-                        logger.info(f"{self.session_name} | Rank: <m>{rank}</m> | Level: <r>{level}</r> | "
+                         logger.info(f"{self.session_name} | Rank: <m>{rank}</m> | Level: <r>{level}</r> | "
                                     f"Invite amount: <y>{invite_amount}</y>")
 
-                    taps = randint(a=settings.RANDOM_TAPS_COUNT[0], b=settings.RANDOM_TAPS_COUNT[1])
+                         taps = randint(a=settings.RANDOM_TAPS_COUNT[0], b=settings.RANDOM_TAPS_COUNT[1])
 
-                    game_data = await self.get_game_data(http_client=http_client)
+                         game_data = await self.get_game_data(http_client=http_client)
 
-                    available_energy = game_data['coinPoolLeftCount']
-                    coins_by_tap = game_data['singleCoinValue']
+                         available_energy = game_data['coinPoolLeftCount']
+                         coins_by_tap = game_data['singleCoinValue']
 
                     if active_turbo:
                         # taps += settings.ADD_TAPS_ON_TURBO
