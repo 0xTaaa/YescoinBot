@@ -242,7 +242,20 @@ class Tapper:
 
             while True:
                 try:
-                    if time() - access_token_created_time >= 3600:
+                    local_timezone = get_localzone()
+                    current_time = datetime.now(local_timezone)
+                    start_time = current_time.replace(hour=settings.SLEEP_TIME[0], minute=0, second=0, microsecond=0)
+                    end_time = current_time.replace(hour=settings.SLEEP_TIME[1], minute=0, second=0, microsecond=0)
+
+                    if end_time < start_time:
+                        end_time += timedelta(days=1)
+
+                    if settings.NIGHT_MODE and (start_time <=current_time <=end_time):
+                        time_to_sleep = (end_time - current_time).total_seconds()
+                        logger.info(f"Night Mode ON | Good Night Baby! | Sleeping for {time_to_sleep} seconds until {end_time}.")
+                        await asyncio.sleep(time_to_sleep)
+
+                   elif time() - access_token_created_time >= 3600:
                         tg_web_data = await self.get_tg_web_data(proxy=proxy)
                         access_token = await self.login(http_client=http_client, tg_web_data=tg_web_data)
 

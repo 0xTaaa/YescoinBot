@@ -25,5 +25,7 @@ class Settings(BaseSettings):
 
     USE_PROXY_FROM_FILE: bool = False
 
+    NIGHT_MODE: bool = False
+    SLEEP_TIME: list[int] = [0, 6] # example from 0 am to 6 am bot will sleep
 
 settings = Settings()
